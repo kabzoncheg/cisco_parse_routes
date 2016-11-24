@@ -16,7 +16,6 @@ def get_args():
                         default=os.path.join(os.getcwd(), 'output.txt'))
     return parser.parse_args()
 
-
 def route_parser(path_to_file):
     """
     :param path_to_file: OS Path to file
@@ -35,11 +34,17 @@ def route_parser(path_to_file):
     for nh in unique_nh:
         result[nh] = []
         pattern = r'^.+ (?P<network>(\d{1,3}\.?){4}/\d{1,2}).+ ' + re.escape(nh)
+        pattern2 = r'^.+ (?P<network>(\d{1,3}\.?){4}).+ ' + re.escape(nh)
         regex = re.compile(pattern)
+        regex2 = re.compile(pattern2)
         for line in file_lines:
             if regex.match(line):
                 network = regex.match(line).group('network')
                 result[nh].append(network)
+            else:
+                if regex2.match(line):
+                    network = regex2.match(line).group('network')
+                    result[nh].append(network)
         result[nh].sort()
     return result
 
